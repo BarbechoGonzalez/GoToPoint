@@ -23,7 +23,7 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
-
+	state.state="IDLE";
 }
 
 /**
@@ -62,12 +62,15 @@ void SpecificWorker::compute()
 
 float SpecificWorker::go(const TargetPose &target)
 {
-
+	state.state="WORKING";
+	qDebug()<<"hola";
+	
+	
 }
 
 NavState SpecificWorker::getState()
 {
-
+	return state;
 }
 
 void SpecificWorker::stop()

@@ -30,7 +30,7 @@ ControllerI::~ControllerI()
 }
 
 float ControllerI::go(const TargetPose  &target, const Ice::Current&)
-{
+{	
 	return worker->go(target);
 }
 

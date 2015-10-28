@@ -50,7 +50,7 @@ public slots:
 	void compute(); 	
 
 private:
-	
+	NavState state;
 };
 
 #endif
