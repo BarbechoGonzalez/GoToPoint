@@ -1,0 +1,43 @@
+FILE(REMOVE_RECURSE
+  "CommonBehavior.cpp"
+  "CommonBehavior.h"
+  "DifferentialRobot.cpp"
+  "DifferentialRobot.h"
+  "Laser.cpp"
+  "Laser.h"
+  "Controller.cpp"
+  "Controller.h"
+  "moc_specificworker.cxx"
+  "moc_specificmonitor.cxx"
+  "moc_genericmonitor.cxx"
+  "moc_commonbehaviorI.cxx"
+  "moc_genericworker.cxx"
+  "moc_controllerI.cxx"
+  "ui_mainUI.h"
+  "CMakeFiles/GoToPoint.dir/specificworker.cpp.o"
+  "CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o"
+  "CMakeFiles/GoToPoint.dir/home/ivan/robocomp/classes/rapplication/rapplication.cpp.o"
+  "CMakeFiles/GoToPoint.dir/home/ivan/robocomp/classes/qlog/qlog.cpp.o"
+  "CMakeFiles/GoToPoint.dir/main.cpp.o"
+  "CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o"
+  "CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o"
+  "CMakeFiles/GoToPoint.dir/genericworker.cpp.o"
+  "CMakeFiles/GoToPoint.dir/controllerI.cpp.o"
+  "CMakeFiles/GoToPoint.dir/CommonBehavior.cpp.o"
+  "CMakeFiles/GoToPoint.dir/DifferentialRobot.cpp.o"
+  "CMakeFiles/GoToPoint.dir/Laser.cpp.o"
+  "CMakeFiles/GoToPoint.dir/Controller.cpp.o"
+  "CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o"
+  "CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o"
+  "CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o"
+  "CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o"
+  "CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o"
+  "CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o"
+  "../bin/GoToPoint.pdb"
+  "../bin/GoToPoint"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/GoToPoint.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

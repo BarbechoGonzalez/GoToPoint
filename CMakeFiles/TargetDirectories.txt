@@ -1,0 +1,1 @@
+/home/ivan/robocomp/components/g1/GoToPoint/src/CMakeFiles/GoToPoint.dir
