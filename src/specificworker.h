@@ -59,6 +59,8 @@ private:
 	TargetPose objetivoactual;
 	TargetPose posetag;
 	NavState state;
+	TBaseState Basestate;
+	RoboCompLaser::TLaserData ldata;
 	void gototarget();
 	void orientarse();
 	bool hayobtaculo();

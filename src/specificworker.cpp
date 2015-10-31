@@ -24,6 +24,7 @@
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
 	state.state="IDLE";
+	st=State::IDLE;
 }
 
 /**
@@ -57,6 +58,8 @@ void SpecificWorker::compute()
 // 	{
 // 		std::cout << "Error reading from Camera" << e << std::endl;
 // 	}
+	ldata=laser_proxy->getLaserData();
+	differentialrobot_proxy->getBaseState(Basestate);
 	switch(st){
 	  case State::FINISH:
 		break;
@@ -76,7 +79,7 @@ float SpecificWorker::go(const TargetPose &target)
 {
 	state.state="WORKING";
 	st=State::WORKING;
-	QMutexLocker m(&mutex);
+	QMutexLocker ml(&m);
 	posetag=target;
 	objetivoactual=target;
 }
@@ -95,28 +98,76 @@ void SpecificWorker::gototarget()
 	if (!orientado)
 		orientarse();
 	if(!hayobtaculo()){
-		if (puedopasar()){
-			//avanzar
-			if(hellegado()){
-				st=State::FINISH;
-				state="FINISH";
-			}
-		}
-		else
-			calcularsubobjetivo();
+// 		if (puedopasar()){
+// 			//avanzar
+// 			if(hellegado()){
+// 				st=State::FINISH;
+// 				state.state="FINISH";
+// 			}
+// 		}
+// 		else
+// 			calcularsubobjetivo();
 	}
 	else
 	  calcularsubobjetivo();
 }
-
+QVec cambiarinversoPlano(float alpha, QVec punto, QVec plano)
+{
+	QMat Rt(3,3);
+	Rt(0,0)=cos(alpha);
+	Rt(0,1)=-sin(alpha);
+	Rt(0,2)=plano(0);
+	Rt(1,0)=sin(alpha);
+	Rt(1,1)=cos(alpha);
+	Rt(1,2)=plano(1);
+	Rt(2,0)=0;
+	Rt(2,1)=0;
+	Rt(2,2)=1;
+	QVec m(3);
+	m(0)=punto(0);
+	m(1)=punto(1);
+	m(2)=1;
+	QMat Rtinver=Rt.invert();
+	
+	QVec TagR(3);
+	TagR=Rtinver*m;
+	TagR=TagR/TagR(2);
+	return TagR;
+}
 void SpecificWorker::orientarse()
 {
-
+	differentialrobot_proxy->setSpeedBase(0,0);
+	QVec plano(2);
+	plano(0)=Basestate.z;
+	plano(1)=Basestate.x;
+	QVec punto(2);
+	punto(0)=objetivoactual.z;
+	punto(1)=objetivoactual.x;
+	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
+	float rot=atan2(objerobot(1),objerobot(0));
+	differentialrobot_proxy->setSpeedBase(0,rot);
+	sleep(1);
+	differentialrobot_proxy->setSpeedBase(0,0);
+	orientado=true;
 }
 
 bool SpecificWorker::hayobtaculo()
 {
-	return false;
+	differentialrobot_proxy->setSpeedBase(0,0);
+	QVec plano(2);
+	plano(0)=Basestate.z;
+	plano(1)=Basestate.x;
+	QVec punto(2);
+	punto(0)=objetivoactual.z;
+	punto(1)=objetivoactual.x;
+	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
+	float dist=sqrt((objerobot(0)*objerobot(0))+(objerobot(1)*objerobot(1)));
+	if((ldata.data()+50)->dist<dist){
+	  qDebug()<<"hay obtaculo";
+	  return true;
+	}
+	else 
+	  return false;
 }
 
 void SpecificWorker::calcularsubobjetivo()
