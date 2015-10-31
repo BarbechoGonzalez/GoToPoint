@@ -33,6 +33,7 @@
 
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
+#include <qt4/QtCore/QMutex>
 
 class SpecificWorker : public GenericWorker
 {
@@ -50,7 +51,20 @@ public slots:
 	void compute(); 	
 
 private:
+	bool orientado;
+	QMutex m;
+	enum class State  { WORKING, FINISH, IDLE, BLOCKED};
+	State st;
+	TargetPose subobjetivo;
+	TargetPose objetivoactual;
+	TargetPose posetag;
 	NavState state;
+	void gototarget();
+	void orientarse();
+	bool hayobtaculo();
+	void calcularsubobjetivo();
+	bool puedopasar();
+	bool hellegado();
 };
 
 #endif

@@ -57,15 +57,28 @@ void SpecificWorker::compute()
 // 	{
 // 		std::cout << "Error reading from Camera" << e << std::endl;
 // 	}
+	switch(st){
+	  case State::FINISH:
+		break;
+	  case State::WORKING:
+			gototarget();
+		break;
+	  case State::IDLE:
+		break;
+	  case State::BLOCKED:
+		break;
+		
+	}
+	
 }
-
 
 float SpecificWorker::go(const TargetPose &target)
 {
 	state.state="WORKING";
-	qDebug()<<"hola";
-	
-	
+	st=State::WORKING;
+	QMutexLocker m(&mutex);
+	posetag=target;
+	objetivoactual=target;
 }
 
 NavState SpecificWorker::getState()
@@ -74,6 +87,47 @@ NavState SpecificWorker::getState()
 }
 
 void SpecificWorker::stop()
+{
+
+}
+void SpecificWorker::gototarget()
+{
+	if (!orientado)
+		orientarse();
+	if(!hayobtaculo()){
+		if (puedopasar()){
+			//avanzar
+			if(hellegado()){
+				st=State::FINISH;
+				state="FINISH";
+			}
+		}
+		else
+			calcularsubobjetivo();
+	}
+	else
+	  calcularsubobjetivo();
+}
+
+void SpecificWorker::orientarse()
+{
+
+}
+
+bool SpecificWorker::hayobtaculo()
+{
+	return false;
+}
+
+void SpecificWorker::calcularsubobjetivo()
+{
+
+}
+bool SpecificWorker::puedopasar()
+{
+
+}
+bool SpecificWorker::hellegado()
 {
 
 }
