@@ -51,9 +51,10 @@ public slots:
 	void compute(); 	
 
 private:
-	bool orientado;
 	QMutex m;
 	enum class State  { WORKING, FINISH, IDLE, BLOCKED};
+	enum class statego  { ORIENTARSE, AVANZAR, HAYOBTACULO, PUEDOPASAR, CALCULAROBJETIVO, HELLEGADO};
+	statego stgo;
 	State st;
 	TargetPose subobjetivo;
 	TargetPose objetivoactual;
@@ -61,12 +62,17 @@ private:
 	NavState state;
 	TBaseState Basestate;
 	RoboCompLaser::TLaserData ldata;
+	bool cango;
+	bool lado;
+	bool hayobt;
 	void gototarget();
 	void orientarse();
 	bool hayobtaculo();
 	void calcularsubobjetivo();
 	bool puedopasar();
-	bool hellegado();
+	void hellegado();
+	void avanzar();
+	void writeinfo(string _info);
 };
 
 #endif

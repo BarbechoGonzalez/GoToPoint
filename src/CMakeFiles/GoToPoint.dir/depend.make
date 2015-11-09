@@ -207,6 +207,7 @@ src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QMatr
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -643,6 +644,7 @@ src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QMatrix4x
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -1080,6 +1082,7 @@ src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QMatri
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -1515,6 +1518,7 @@ src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QMatrix
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -2320,6 +2324,7 @@ src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QMatrix4x4
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/main.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -2757,6 +2762,7 @@ src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/Q
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -3193,6 +3199,7 @@ src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QMatr
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -3630,6 +3637,7 @@ src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QM
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -4065,6 +4073,7 @@ src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QMa
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -4502,6 +4511,7 @@ src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/Q
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -4951,6 +4961,7 @@ src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QM
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -5390,6 +5401,7 @@ src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QMatr
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -5839,6 +5851,7 @@ src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QMatri
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QPalette
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QPrinter
+src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QTextEdit
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QTransform
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QVector3D
 src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o: /usr/include/qt4/QtGui/QWidget

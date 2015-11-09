@@ -25,6 +25,10 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
 	state.state="IDLE";
 	st=State::IDLE;
+	cango=false;
+	lado=true;
+	stgo=statego::ORIENTARSE;
+	hayobt=true;
 }
 
 /**
@@ -77,11 +81,25 @@ void SpecificWorker::compute()
 
 float SpecificWorker::go(const TargetPose &target)
 {
-	state.state="WORKING";
-	st=State::WORKING;
-	QMutexLocker ml(&m);
-	posetag=target;
-	objetivoactual=target;
+		
+		if(state.state=="WORKING"){
+			QMutexLocker ml(&m);
+			posetag.x=target.x;
+			posetag.y=target.y;
+			posetag.z=target.z;
+		}
+		else{
+			state.state="WORKING";
+			st=State::WORKING;
+			QMutexLocker ml(&m);
+			posetag.x=target.x;
+			posetag.y=target.y;
+			posetag.z=target.z;
+			objetivoactual.x=target.x;
+			objetivoactual.y=target.y;
+			objetivoactual.z=target.z;
+		}
+  
 }
 
 NavState SpecificWorker::getState()
@@ -95,21 +113,46 @@ void SpecificWorker::stop()
 }
 void SpecificWorker::gototarget()
 {
-	if (!orientado)
-		orientarse();
-	if(!hayobtaculo()){
-// 		if (puedopasar()){
-// 			//avanzar
-// 			if(hellegado()){
-// 				st=State::FINISH;
-// 				state.state="FINISH";
-// 			}
-// 		}
-// 		else
-// 			calcularsubobjetivo();
+	
+	writeinfo("poserobot:("+to_string(Basestate.z)+","+to_string(Basestate.x)+")\n"+"posetag:("+to_string(posetag.z)+","+to_string(posetag.x)+")\n"+"objetivoactual:("+to_string(objetivoactual.z)+","+to_string(objetivoactual.x)+")\n"+"subobjetivo:("+to_string(subobjetivo.z)+","+to_string(subobjetivo.x)+")");
+	switch(stgo){
+	  case statego::ORIENTARSE:
+			qDebug()<<"ORIENTARSE";
+			orientarse();
+		break;
+	  case statego::HAYOBTACULO:
+			hayobt=hayobtaculo();
+			qDebug()<<"HAYOBTACULO:"<<hayobt;
+			if (!hayobt){
+				if(cango)
+					stgo=statego::AVANZAR;
+				else
+					stgo=statego::PUEDOPASAR;
+			}
+			else
+			  stgo=statego::CALCULAROBJETIVO;
+		break;
+	  case statego::PUEDOPASAR:
+			cango=puedopasar();
+			qDebug()<<"PUEDOPASAR:"<<cango;
+			if (cango)
+				stgo=statego::AVANZAR;
+			else
+			  stgo=statego::CALCULAROBJETIVO;
+		break;
+	  case statego::AVANZAR:
+			qDebug()<<"AVANZAR";
+			avanzar();
+		break;
+	  case statego::CALCULAROBJETIVO:
+			qDebug()<<"CALCULAROBJETIVO";
+			calcularsubobjetivo();
+		break;
+	  case statego::HELLEGADO:
+			qDebug()<<"HELLEGADO";
+			hellegado();
+		break;
 	}
-	else
-	  calcularsubobjetivo();
 }
 QVec cambiarinversoPlano(float alpha, QVec punto, QVec plano)
 {
@@ -128,7 +171,6 @@ QVec cambiarinversoPlano(float alpha, QVec punto, QVec plano)
 	m(1)=punto(1);
 	m(2)=1;
 	QMat Rtinver=Rt.invert();
-	
 	QVec TagR(3);
 	TagR=Rtinver*m;
 	TagR=TagR/TagR(2);
@@ -136,7 +178,6 @@ QVec cambiarinversoPlano(float alpha, QVec punto, QVec plano)
 }
 void SpecificWorker::orientarse()
 {
-	differentialrobot_proxy->setSpeedBase(0,0);
 	QVec plano(2);
 	plano(0)=Basestate.z;
 	plano(1)=Basestate.x;
@@ -148,12 +189,11 @@ void SpecificWorker::orientarse()
 	differentialrobot_proxy->setSpeedBase(0,rot);
 	sleep(1);
 	differentialrobot_proxy->setSpeedBase(0,0);
-	orientado=true;
+	stgo=statego::HAYOBTACULO;
 }
 
 bool SpecificWorker::hayobtaculo()
 {
-	differentialrobot_proxy->setSpeedBase(0,0);
 	QVec plano(2);
 	plano(0)=Basestate.z;
 	plano(1)=Basestate.x;
@@ -162,27 +202,158 @@ bool SpecificWorker::hayobtaculo()
 	punto(1)=objetivoactual.x;
 	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
 	float dist=sqrt((objerobot(0)*objerobot(0))+(objerobot(1)*objerobot(1)));
-	if((ldata.data()+50)->dist<dist){
-	  qDebug()<<"hay obtaculo";
+	if((ldata.data()+50)->dist<dist)
 	  return true;
-	}
 	else 
-	  return false;
+		return false;
+}
+QVec cambiarPlano(float alpha, QVec punto, QVec plano)
+{
+	QMat Rt(3,3);
+	Rt(0,0)=cos(alpha);
+	Rt(0,1)=-sin(alpha);
+	Rt(0,2)=plano(0);
+	Rt(1,0)=sin(alpha);
+	Rt(1,1)=cos(alpha);
+	Rt(1,2)=plano(1);
+	Rt(2,0)=0;
+	Rt(2,1)=0;
+	Rt(2,2)=1;
+	QVec m(3);
+	m(0)=punto(0);
+	m(1)=punto(1);
+	m(2)=1;
+	QVec sol(3);
+	sol=Rt*m;
+	sol=sol/sol(2);
+	return sol;
 }
 
 void SpecificWorker::calcularsubobjetivo()
 {
-
+	int i;
+	int sentido;
+	float anterior =(ldata.data()+50)->dist;
+	float disfinal;
+	float anglefinal;
+	if(hayobt){
+		if(lado){
+			for(i=51;i<100;i++){
+				if(((ldata.data()+i)->dist)-anterior>7){
+					sentido=1;
+					break;
+				}
+				anterior=(ldata.data()+i)->dist;
+			}
+		}
+		else{
+			for(i=49;i>0;i--){
+				if(((ldata.data()+i)->dist)-anterior>7){
+					sentido=-1;
+					break;
+				}
+				anterior=(ldata.data()+i)->dist;
+			}
+		}
+		float dist1=(ldata.data()+i-sentido)->dist;
+		float dist2=200;
+		disfinal=sqrt(dist1*dist1-dist2*dist2);
+		float alpha=atan2(disfinal,dist2);
+		disfinal=(ldata.data()+i)->dist/2;
+		anglefinal=sentido*alpha+(ldata.data()+i)->angle;
+	}
+	else {
+		int aux;
+		if(lado){
+			aux=49;
+		}
+		else{
+			aux=51;
+		}  
+		anglefinal=(ldata.data()+aux)->angle;
+		disfinal=(ldata.data()+aux)->dist/2;
+	}
+	float x=disfinal*sin(anglefinal);
+	float z=disfinal*cos(anglefinal);
+	QVec punto(2);
+	QVec plano(2);
+	punto(0)=z;
+	punto(1)=x;
+	plano(0)=Basestate.z;
+	plano(1)=Basestate.x;
+	QVec obj=cambiarPlano(Basestate.alpha,punto,plano);
+	subobjetivo={obj(1),0,obj(0)};
+	objetivoactual.x=subobjetivo.x;
+	objetivoactual.y=subobjetivo.y;
+	objetivoactual.z=subobjetivo.z;
+	stgo=statego::ORIENTARSE;
+	differentialrobot_proxy->setSpeedBase(0,0);
+	cango=false;
 }
 bool SpecificWorker::puedopasar()
-{
-
+{	int i;
+	float distobje=sqrt(objetivoactual.x*objetivoactual.x+objetivoactual.z*objetivoactual.z);
+	if((ldata.data()+49)->dist<(ldata.data()+51)->dist){
+		for(i=51;i<100;i++){
+			float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+			float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+			x=abs(x);
+			c=abs(c);
+			qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
+			if (x<210&&c<distobje){
+				return false;
+			}
+		}
+	}
+	else{
+		for(i=49;i>0;i--){
+			float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+			float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+			x=abs(x);
+			c=abs(c);
+			qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
+			if (x<210&&c<distobje){
+				return false;
+			}
+		}
+	}
+	return true;
 }
-bool SpecificWorker::hellegado()
+void SpecificWorker::hellegado()
 {
-
+	if(abs(Basestate.z-objetivoactual.z)<100&&abs(Basestate.x-objetivoactual.x)<100){
+		m.lock();
+		if (objetivoactual.x==posetag.x&&objetivoactual.z==posetag.z){
+			state.state="FINISH";
+			st=State::FINISH;
+			if(lado)
+				lado=false;
+			else
+				lado=true;
+		}
+		else{
+			objetivoactual.x=posetag.x;
+			objetivoactual.y=posetag.y;
+			objetivoactual.z=posetag.z;
+		}
+		m.unlock();
+		differentialrobot_proxy->setSpeedBase(0,0);
+		stgo=statego::ORIENTARSE;
+		cango=false;
+	}
+}
+void SpecificWorker::avanzar()
+{
+	differentialrobot_proxy->setSpeedBase(200,0);
+	stgo=statego::HELLEGADO;
 }
 
+void SpecificWorker::writeinfo(string _info)
+{	
+	texto->clear();
+	QString *text=new QString(_info.c_str());
+	texto->append(*text);
+}  
 
 
 

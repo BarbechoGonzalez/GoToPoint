@@ -208,6 +208,7 @@ src/CMakeFiles/GoToPoint.dir/commonbehaviorI.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -644,6 +645,7 @@ src/CMakeFiles/GoToPoint.dir/controllerI.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -1081,6 +1083,7 @@ src/CMakeFiles/GoToPoint.dir/genericmonitor.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -1516,6 +1519,7 @@ src/CMakeFiles/GoToPoint.dir/genericworker.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -2321,6 +2325,7 @@ src/CMakeFiles/GoToPoint.dir/main.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -2758,6 +2763,7 @@ src/CMakeFiles/GoToPoint.dir/moc_commonbehaviorI.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -3194,6 +3200,7 @@ src/CMakeFiles/GoToPoint.dir/moc_controllerI.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -3631,6 +3638,7 @@ src/CMakeFiles/GoToPoint.dir/moc_genericmonitor.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -4066,6 +4074,7 @@ src/CMakeFiles/GoToPoint.dir/moc_genericworker.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -4503,6 +4512,7 @@ src/CMakeFiles/GoToPoint.dir/moc_specificmonitor.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -4952,6 +4962,7 @@ src/CMakeFiles/GoToPoint.dir/moc_specificworker.cxx.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -5391,6 +5402,7 @@ src/CMakeFiles/GoToPoint.dir/specificmonitor.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget
@@ -5840,6 +5852,7 @@ src/CMakeFiles/GoToPoint.dir/specificworker.cpp.o
  /usr/include/qt4/QtGui/QPalette
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPrinter
+ /usr/include/qt4/QtGui/QTextEdit
  /usr/include/qt4/QtGui/QTransform
  /usr/include/qt4/QtGui/QVector3D
  /usr/include/qt4/QtGui/QWidget

@@ -7,12 +7,22 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>GoToPoint</string>
   </property>
+  <widget class="QTextEdit" name="texto">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>381</width>
+     <height>291</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
