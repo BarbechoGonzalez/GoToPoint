@@ -17,6 +17,8 @@ Logger.h
 /home/ivan/robocomp/components/g1/GoToPoint/src/specificworker.cpp
 specificworker.h
 /home/ivan/robocomp/components/g1/GoToPoint/src/specificworker.h
+qt4/Qt/qdebug.h
+-
 
 /home/ivan/robocomp/components/g1/GoToPoint/src/specificworker.h
 genericworker.h

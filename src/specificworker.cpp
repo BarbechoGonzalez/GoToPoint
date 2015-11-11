@@ -17,6 +17,7 @@
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "specificworker.h"
+#include <qt4/Qt/qdebug.h>
 
 /**
 * \brief Default constructor
@@ -52,16 +53,6 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
-// 	try
-// 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
-// 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
 	ldata=laser_proxy->getLaserData();
 	differentialrobot_proxy->getBaseState(Basestate);
 	switch(st){
@@ -84,6 +75,13 @@ float SpecificWorker::go(const TargetPose &target)
 		
 		if(state.state=="WORKING"){
 			QMutexLocker ml(&m);
+			if(abs(posetag.x-target.x)>200||abs(posetag.z-target.z)>200){
+				objetivoactual.x=target.x;
+				objetivoactual.y=target.y;
+				objetivoactual.z=target.z;
+				stgo=statego::ORIENTARSE;
+				cango=false;
+			}
 			posetag.x=target.x;
 			posetag.y=target.y;
 			posetag.z=target.z;
@@ -113,7 +111,7 @@ void SpecificWorker::stop()
 }
 void SpecificWorker::gototarget()
 {
-	
+	qDebug()<<objetivoactual.x<<","<<objetivoactual.z;
 	writeinfo("poserobot:("+to_string(Basestate.z)+","+to_string(Basestate.x)+")\n"+"posetag:("+to_string(posetag.z)+","+to_string(posetag.x)+")\n"+"objetivoactual:("+to_string(objetivoactual.z)+","+to_string(objetivoactual.x)+")\n"+"subobjetivo:("+to_string(subobjetivo.z)+","+to_string(subobjetivo.x)+")");
 	switch(stgo){
 	  case statego::ORIENTARSE:
@@ -239,7 +237,7 @@ void SpecificWorker::calcularsubobjetivo()
 	if(hayobt){
 		if(lado){
 			for(i=51;i<100;i++){
-				if(((ldata.data()+i)->dist)-anterior>7){
+				if(((ldata.data()+i)->dist)-anterior>100){
 					sentido=1;
 					break;
 				}
@@ -248,19 +246,21 @@ void SpecificWorker::calcularsubobjetivo()
 		}
 		else{
 			for(i=49;i>0;i--){
-				if(((ldata.data()+i)->dist)-anterior>7){
+				if(((ldata.data()+i)->dist)-anterior>100){
 					sentido=-1;
 					break;
 				}
 				anterior=(ldata.data()+i)->dist;
 			}
 		}
-		float dist1=(ldata.data()+i-sentido)->dist;
+		i--;
+		float dist1=(ldata.data()+i)->dist;
 		float dist2=200;
-		disfinal=sqrt(dist1*dist1-dist2*dist2);
-		float alpha=atan2(disfinal,dist2);
-		disfinal=(ldata.data()+i)->dist/2;
-		anglefinal=sentido*alpha+(ldata.data()+i)->angle;
+		float alpha=asin(dist2/dist1);
+		alpha=abs(alpha);
+		disfinal=((ldata.data()+i+sentido)->dist/2);
+		anglefinal=alpha+abs((ldata.data()+i)->angle);
+		anglefinal=sentido*anglefinal;
 	}
 	else {
 		int aux;
@@ -292,36 +292,39 @@ void SpecificWorker::calcularsubobjetivo()
 }
 bool SpecificWorker::puedopasar()
 {	int i;
-	float distobje=sqrt(objetivoactual.x*objetivoactual.x+objetivoactual.z*objetivoactual.z);
-	if((ldata.data()+49)->dist<(ldata.data()+51)->dist){
-		for(i=51;i<100;i++){
-			float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-			float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-			x=abs(x);
-			c=abs(c);
-			qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
-			if (x<210&&c<distobje){
-				return false;
-			}
+	QVec plano(2);
+	plano(0)=Basestate.z;
+	plano(1)=Basestate.x;
+	QVec punto(2);
+	punto(0)=objetivoactual.z;
+	punto(1)=objetivoactual.x;
+	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
+	float distobje=sqrt(objerobot(0)*objerobot(0)+objerobot(1)*objerobot(1));
+	for(i=51;i<100;i++){
+		float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+		float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+		x=abs(x);
+		c=abs(c);
+		qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
+		if (x<200&&c<distobje){
+			return false;
 		}
 	}
-	else{
-		for(i=49;i>0;i--){
-			float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-			float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-			x=abs(x);
-			c=abs(c);
-			qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
-			if (x<210&&c<distobje){
-				return false;
-			}
+	for(i=49;i>0;i--){
+		float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+		float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
+		x=abs(x);
+		c=abs(c);
+		qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
+		if (x<200&&c<distobje){
+			return false;
 		}
 	}
 	return true;
 }
 void SpecificWorker::hellegado()
 {
-	if(abs(Basestate.z-objetivoactual.z)<100&&abs(Basestate.x-objetivoactual.x)<100){
+	if(abs(Basestate.z-objetivoactual.z)<100&&abs(Basestate.x-objetivoactual.x)<400){
 		m.lock();
 		if (objetivoactual.x==posetag.x&&objetivoactual.z==posetag.z){
 			state.state="FINISH";
@@ -339,6 +342,17 @@ void SpecificWorker::hellegado()
 		m.unlock();
 		differentialrobot_proxy->setSpeedBase(0,0);
 		stgo=statego::ORIENTARSE;
+		cango=false;
+	}
+	else if(abs(Basestate.z)>2400&&abs(Basestate.x)>2400){
+		m.lock();
+		objetivoactual.x=posetag.x;
+		objetivoactual.y=posetag.y;
+		objetivoactual.z=posetag.z;
+		differentialrobot_proxy->setSpeedBase(0,0);
+		m.lock();
+		stgo=statego::ORIENTARSE;
+		st=State::BLOCKED;
 		cango=false;
 	}
 }
