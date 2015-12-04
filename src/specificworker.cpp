@@ -30,6 +30,15 @@ SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 	lado=true;
 	stgo=statego::ORIENTARSE;
 	hayobt=true;
+	inner = new InnerModel("/home/ivan/robocomp/files/innermodel/simpleworld.xml");
+	repe=0;
+	graphicsView->setScene(&scene);
+	graphicsView->show();
+	graphicsView->scale(3,3);
+	TBaseState s;
+// 	differentialrobot_proxy->getBaseState(s);
+// 	differentialrobot_proxy->setOdometerPose(0,0,s.alpha);
+
 }
 
 /**
@@ -53,8 +62,10 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 
 void SpecificWorker::compute()
 {
+	histogram();
 	ldata=laser_proxy->getLaserData();
 	differentialrobot_proxy->getBaseState(Basestate);
+	inner->updateTransformValues("base",Basestate.x,0,Basestate.z,0,Basestate.alpha,0);
 	switch(st){
 	  case State::FINISH:
 		break;
@@ -72,30 +83,21 @@ void SpecificWorker::compute()
 
 float SpecificWorker::go(const TargetPose &target)
 {
-		
 		if(state.state=="WORKING"){
 			QMutexLocker ml(&m);
-			if(abs(posetag.x-target.x)>200||abs(posetag.z-target.z)>200){
-				objetivoactual.x=target.x;
-				objetivoactual.y=target.y;
-				objetivoactual.z=target.z;
+			if(fabs(posetag.x-target.x)>200||fabs(posetag.z-target.z)>200){
+				objetivoactual={target.x,target.y,target.z};
 				stgo=statego::ORIENTARSE;
 				cango=false;
 			}
-			posetag.x=target.x;
-			posetag.y=target.y;
-			posetag.z=target.z;
+			posetag={target.x,target.y,target.z};
 		}
 		else{
 			state.state="WORKING";
 			st=State::WORKING;
 			QMutexLocker ml(&m);
-			posetag.x=target.x;
-			posetag.y=target.y;
-			posetag.z=target.z;
-			objetivoactual.x=target.x;
-			objetivoactual.y=target.y;
-			objetivoactual.z=target.z;
+			posetag={target.x,target.y,target.z};;
+			objetivoactual={target.x/2,target.y/2,target.z/2};
 		}
   
 }
@@ -115,12 +117,10 @@ void SpecificWorker::gototarget()
 	writeinfo("poserobot:("+to_string(Basestate.z)+","+to_string(Basestate.x)+")\n"+"posetag:("+to_string(posetag.z)+","+to_string(posetag.x)+")\n"+"objetivoactual:("+to_string(objetivoactual.z)+","+to_string(objetivoactual.x)+")\n"+"subobjetivo:("+to_string(subobjetivo.z)+","+to_string(subobjetivo.x)+")");
 	switch(stgo){
 	  case statego::ORIENTARSE:
-			qDebug()<<"ORIENTARSE";
 			orientarse();
 		break;
 	  case statego::HAYOBTACULO:
 			hayobt=hayobtaculo();
-			qDebug()<<"HAYOBTACULO:"<<hayobt;
 			if (!hayobt){
 				if(cango)
 					stgo=statego::AVANZAR;
@@ -132,58 +132,27 @@ void SpecificWorker::gototarget()
 		break;
 	  case statego::PUEDOPASAR:
 			cango=puedopasar();
-			qDebug()<<"PUEDOPASAR:"<<cango;
 			if (cango)
 				stgo=statego::AVANZAR;
 			else
 			  stgo=statego::CALCULAROBJETIVO;
 		break;
 	  case statego::AVANZAR:
-			qDebug()<<"AVANZAR";
 			avanzar();
 		break;
 	  case statego::CALCULAROBJETIVO:
-			qDebug()<<"CALCULAROBJETIVO";
 			calcularsubobjetivo();
 		break;
 	  case statego::HELLEGADO:
-			qDebug()<<"HELLEGADO";
 			hellegado();
 		break;
 	}
 }
-QVec cambiarinversoPlano(float alpha, QVec punto, QVec plano)
-{
-	QMat Rt(3,3);
-	Rt(0,0)=cos(alpha);
-	Rt(0,1)=-sin(alpha);
-	Rt(0,2)=plano(0);
-	Rt(1,0)=sin(alpha);
-	Rt(1,1)=cos(alpha);
-	Rt(1,2)=plano(1);
-	Rt(2,0)=0;
-	Rt(2,1)=0;
-	Rt(2,2)=1;
-	QVec m(3);
-	m(0)=punto(0);
-	m(1)=punto(1);
-	m(2)=1;
-	QMat Rtinver=Rt.invert();
-	QVec TagR(3);
-	TagR=Rtinver*m;
-	TagR=TagR/TagR(2);
-	return TagR;
-}
+
 void SpecificWorker::orientarse()
 {
-	QVec plano(2);
-	plano(0)=Basestate.z;
-	plano(1)=Basestate.x;
-	QVec punto(2);
-	punto(0)=objetivoactual.z;
-	punto(1)=objetivoactual.x;
-	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
-	float rot=atan2(objerobot(1),objerobot(0));
+	QVec objerobot=inner->transform("base",QVec::vec3(objetivoactual.x,0,objetivoactual.z),"world");
+	float rot=atan2(objerobot(0),objerobot(2));
 	differentialrobot_proxy->setSpeedBase(0,rot);
 	sleep(1);
 	differentialrobot_proxy->setSpeedBase(0,0);
@@ -192,131 +161,109 @@ void SpecificWorker::orientarse()
 
 bool SpecificWorker::hayobtaculo()
 {
-	QVec plano(2);
-	plano(0)=Basestate.z;
-	plano(1)=Basestate.x;
-	QVec punto(2);
-	punto(0)=objetivoactual.z;
-	punto(1)=objetivoactual.x;
-	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
-	float dist=sqrt((objerobot(0)*objerobot(0))+(objerobot(1)*objerobot(1)));
+	QVec objerobot=inner->transform("base",QVec::vec3(objetivoactual.x,0,objetivoactual.z),"world");
+	float dist=sqrt((objerobot(0)*objerobot(0))+(objerobot(2)*objerobot(2)));
 	if((ldata.data()+50)->dist<dist)
 	  return true;
 	else 
 		return false;
 }
-QVec cambiarPlano(float alpha, QVec punto, QVec plano)
-{
-	QMat Rt(3,3);
-	Rt(0,0)=cos(alpha);
-	Rt(0,1)=-sin(alpha);
-	Rt(0,2)=plano(0);
-	Rt(1,0)=sin(alpha);
-	Rt(1,1)=cos(alpha);
-	Rt(1,2)=plano(1);
-	Rt(2,0)=0;
-	Rt(2,1)=0;
-	Rt(2,2)=1;
-	QVec m(3);
-	m(0)=punto(0);
-	m(1)=punto(1);
-	m(2)=1;
-	QVec sol(3);
-	sol=Rt*m;
-	sol=sol/sol(2);
-	return sol;
-}
 
 void SpecificWorker::calcularsubobjetivo()
 {
-	int i;
+	int i,j;
 	int sentido;
-	float anterior =(ldata.data()+50)->dist;
 	float disfinal;
 	float anglefinal;
-	if(hayobt){
-		if(lado){
-			for(i=51;i<100;i++){
-				if(((ldata.data()+i)->dist)-anterior>100){
-					sentido=1;
-					break;
-				}
-				anterior=(ldata.data()+i)->dist;
+	const float R = 500; //Robot radius
+// 	for(i=(int)ldata.size()/2; i>1; i--)
+// 	{
+// 		if( (ldata[i].dist - ldata[i-1].dist) < -R )
+// 		{
+// 			int k=i-2;
+// 			while( (k > 0) and (fabs( ldata[k].dist*sin(ldata[k].angle - ldata[i-1].angle)) < R ))
+// 			{ k--; }
+// 			i=k;
+// 			break;
+// 		}
+// 	}
+// 	for(j=(int)ldata.size()/2; j<(int)ldata.size()-2; j++)
+// 	{
+// 		if( (ldata[j].dist - ldata[j+1].dist) < -R )
+// 		{
+// 			int k=j+2;
+// 			while( (k < (int)ldata.size()-1) and (fabs( ldata[k].dist*sin(ldata[k].angle - ldata[j+1].angle)) < R ))
+// 			{ k++; }
+// 			j=k;
+// 			break;
+// 		}
+// 	}
+		float anterior;
+		for(i=51;i<100;i++){
+			if((ldata[i].dist)-anterior>100){
+				sentido=1;
+				break;
 			}
+			anterior=ldata[i].dist;
 		}
-		else{
-			for(i=49;i>0;i--){
-				if(((ldata.data()+i)->dist)-anterior>100){
-					sentido=-1;
-					break;
-				}
-				anterior=(ldata.data()+i)->dist;
+		for(j=49;j>0;j--){
+			if((ldata[j].dist)-anterior>100){
+				sentido=-1;
+				break;
 			}
+			anterior=ldata[j].dist;
 		}
 		i--;
-		float dist1=(ldata.data()+i)->dist;
+		j++;
+		
+	if(abs(50-i)<abs(j-50)){
+// 		disfinal = ldata[i].dist/4;
+// 		anglefinal = ldata[i].angle;
+		float dist1=ldata[i].dist;
 		float dist2=200;
-		float alpha=asin(dist2/dist1);
-		alpha=abs(alpha);
-		disfinal=((ldata.data()+i+sentido)->dist/2);
-		anglefinal=alpha+abs((ldata.data()+i)->angle);
+		float alpha=abs(asin(dist2/dist1));
+		disfinal=ldata[i+sentido].dist/2;
+		anglefinal=alpha+abs(ldata[i].angle);
 		anglefinal=sentido*anglefinal;
 	}
-	else {
-		int aux;
-		if(lado){
-			aux=49;
-		}
-		else{
-			aux=51;
-		}  
-		anglefinal=(ldata.data()+aux)->angle;
-		disfinal=(ldata.data()+aux)->dist/2;
+	else 
+	{
+// 		disfinal = ldata[j].dist/4;
+// 		anglefinal = ldata[j].angle;
+		float dist1=ldata[j].dist;
+		float dist2=200;
+		float alpha=abs(asin(dist2/dist1));
+		disfinal=ldata[j+sentido].dist/2;
+		anglefinal=alpha+abs(ldata[j].angle);
+		anglefinal=sentido*anglefinal;
 	}
-	float x=disfinal*sin(anglefinal);
-	float z=disfinal*cos(anglefinal);
-	QVec punto(2);
-	QVec plano(2);
-	punto(0)=z;
-	punto(1)=x;
-	plano(0)=Basestate.z;
-	plano(1)=Basestate.x;
-	QVec obj=cambiarPlano(Basestate.alpha,punto,plano);
-	subobjetivo={obj(1),0,obj(0)};
-	objetivoactual.x=subobjetivo.x;
-	objetivoactual.y=subobjetivo.y;
-	objetivoactual.z=subobjetivo.z;
+	QVec obj=inner->laserTo("world","laser",disfinal,anglefinal);
+	subobjetivo={obj(0),0,obj(2)};
+	objetivoactual={obj(0),0,obj(2)};
 	stgo=statego::ORIENTARSE;
 	differentialrobot_proxy->setSpeedBase(0,0);
 	cango=false;
 }
 bool SpecificWorker::puedopasar()
-{	int i;
-	QVec plano(2);
-	plano(0)=Basestate.z;
-	plano(1)=Basestate.x;
-	QVec punto(2);
-	punto(0)=objetivoactual.z;
-	punto(1)=objetivoactual.x;
-	QVec objerobot=cambiarinversoPlano(Basestate.alpha,punto,plano);
-	float distobje=sqrt(objerobot(0)*objerobot(0)+objerobot(1)*objerobot(1));
-	for(i=51;i<100;i++){
-		float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-		float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-		x=abs(x);
-		c=abs(c);
-		qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
-		if (x<200&&c<distobje){
+{	
+	int i;
+	QVec objerobot=inner->transform("base",QVec::vec3(objetivoactual.x,0,objetivoactual.z),"world");
+	float distobje=sqrt(objerobot(0)*objerobot(0)+objerobot(2)*objerobot(2));
+	for(i=51;i<100;i++)
+	{
+		float x=fabs(sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist);
+		float c=fabs(cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist);
+		if (x<250&&c<distobje)
+		{
 			return false;
 		}
 	}
-	for(i=49;i>0;i--){
-		float x=sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-		float c=cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist;
-		x=abs(x);
-		c=abs(c);
-		qDebug()<<"-----------"<<x<<c<<(ldata.data()+i)->dist<<distobje<<i;
-		if (x<200&&c<distobje){
+	for(i=49;i>0;i--)
+	{
+		float x=fabs(sin((ldata.data()+i)->angle)*(ldata.data()+i)->dist);
+		float c=fabs(cos((ldata.data()+i)->angle)*(ldata.data()+i)->dist);
+		if (x<250&&c<distobje)
+		{
 			return false;
 		}
 	}
@@ -324,9 +271,11 @@ bool SpecificWorker::puedopasar()
 }
 void SpecificWorker::hellegado()
 {
-	if(abs(Basestate.z-objetivoactual.z)<100&&abs(Basestate.x-objetivoactual.x)<400){
+	if(fabs(Basestate.z-objetivoactual.z)<100&&fabs(Basestate.x-objetivoactual.x)<100)
+	{
 		m.lock();
-		if (objetivoactual.x==posetag.x&&objetivoactual.z==posetag.z){
+		if (objetivoactual.x==posetag.x&&objetivoactual.z==posetag.z)
+		{
 			state.state="FINISH";
 			st=State::FINISH;
 			if(lado)
@@ -334,26 +283,21 @@ void SpecificWorker::hellegado()
 			else
 				lado=true;
 		}
-		else{
-			objetivoactual.x=posetag.x;
-			objetivoactual.y=posetag.y;
-			objetivoactual.z=posetag.z;
+		else
+		{
+			objetivoactual=posetag;
 		}
 		m.unlock();
 		differentialrobot_proxy->setSpeedBase(0,0);
 		stgo=statego::ORIENTARSE;
 		cango=false;
 	}
-	else if(abs(Basestate.z)>2400&&abs(Basestate.x)>2400){
-		m.lock();
-		objetivoactual.x=posetag.x;
-		objetivoactual.y=posetag.y;
-		objetivoactual.z=posetag.z;
-		differentialrobot_proxy->setSpeedBase(0,0);
-		m.lock();
-		stgo=statego::ORIENTARSE;
-		st=State::BLOCKED;
-		cango=false;
+// 	
+	else
+	{
+		QVec objerobot=inner->transform("base",QVec::vec3(objetivoactual.x,0,objetivoactual.z),"world");
+		float rot=atan2(objerobot(0),objerobot(2));
+		differentialrobot_proxy->setSpeedBase(200,rot);
 	}
 }
 void SpecificWorker::avanzar()
@@ -368,6 +312,64 @@ void SpecificWorker::writeinfo(string _info)
 	QString *text=new QString(_info.c_str());
 	texto->append(*text);
 }  
+void SpecificWorker::histogram()
+{
+	static QGraphicsPolygonItem *p;
+	static QGraphicsLineItem *l, *sr, *sl, *safety;
+	const float R = 500; //Robot radius
+	const float SAFETY = 600;
+
+	scene.removeItem(p);
+	scene.removeItem(l);
+	scene.removeItem(sr);
+	scene.removeItem(sl);
+	scene.removeItem(safety);
+	
+	//Search the first increasing step from the center to the right
+	int i,j;
+	for(i=(int)ldata.size()/2; i>1; i--)
+	{
+		if( (ldata[i].dist - ldata[i-1].dist) < -R )
+		{
+			int k=i-2;
+			while( (k > 0) and (fabs( ldata[k].dist*sin(ldata[k].angle - ldata[i-1].angle)) < R ))
+			{ k--; }
+			i=k;
+			break;
+		}
+	}
+	for(j=(int)ldata.size()/2; j<(int)ldata.size()-2; j++)
+	{
+		if( (ldata[j].dist - ldata[j+1].dist) < -R )
+		{
+			int k=j+2;
+			while( (k < (int)ldata.size()-1) and (fabs( ldata[k].dist*sin(ldata[k].angle - ldata[j+1].angle)) < R ))
+			{ k++; }
+			j=k;
+			break;
+		}
+	}
+	
+	safety = scene.addLine(QLine(QPoint(0,-SAFETY/100),QPoint(ldata.size(),-SAFETY/100)), QPen(QColor(Qt::yellow)));
+	sr = scene.addLine(QLine(QPoint(i,0),QPoint(i,-40)), QPen(QColor(Qt::blue)));
+	sl = scene.addLine(QLine(QPoint(j,0),QPoint(j,-40)), QPen(QColor(Qt::magenta)));
+	
+	//DRAW		
+	QPolygonF poly;
+	int x=0;
+	poly << QPointF(0, 0);
+	
+	for(auto d : ldata)
+		poly << QPointF(++x, -d.dist/100); // << QPointF(x+5, d.dist) << QPointF(x+5, 0);
+	poly << QPointF(x, 0);
+
+	l = scene.addLine(QLine(QPoint(ldata.size()/2,0),QPoint(ldata.size()/2,-20)), QPen(QColor(Qt::red)));
+  p = scene.addPolygon(poly, QPen(QColor(Qt::green)));
+	
+	scene.update();
+	
+	//select the best subtarget and return coordinates
+}
 
 
 

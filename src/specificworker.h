@@ -61,6 +61,9 @@ private:
 	TargetPose posetag;
 	NavState state;
 	TBaseState Basestate;
+	InnerModel *inner;
+	QGraphicsScene scene;
+	int repe;
 	RoboCompLaser::TLaserData ldata;
 	bool cango;
 	bool lado;
@@ -73,6 +76,7 @@ private:
 	void hellegado();
 	void avanzar();
 	void writeinfo(string _info);
+	void histogram();
 };
 
 #endif

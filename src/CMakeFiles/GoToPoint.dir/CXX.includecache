@@ -1704,6 +1704,10 @@ qfiledialog.h
 qfont.h
 /usr/include/qt4/QtGui/qfont.h
 
+/usr/include/qt4/QtGui/QGraphicsView
+qgraphicsview.h
+/usr/include/qt4/QtGui/qgraphicsview.h
+
 /usr/include/qt4/QtGui/QHeaderView
 qheaderview.h
 /usr/include/qt4/QtGui/qheaderview.h
@@ -4156,6 +4160,8 @@ QtGui/QAction
 QtGui/QApplication
 -
 QtGui/QButtonGroup
+-
+QtGui/QGraphicsView
 -
 QtGui/QHeaderView
 -
